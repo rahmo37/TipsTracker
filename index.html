@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Style -->
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="responsive.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="table">
+        <div class="table-row table-head">
+          <div class="table-cell">
+            <p>Delivery No.</p>
+          </div>
+          <div class="table-cell">
+            <p>Amount</p>
+          </div>
+          <div class="table-cell">
+            <p>Pay Method</p>
+          </div>
+          <div class="table-cell">
+            <p>Time</p>
+          </div>
+        </div>
+        <div class="table-row">
+          <div class="table-cell">
+            <p>123</p>
+          </div>
+          <div class="table-cell">
+            <p>5.99</p>
+          </div>
+          <div class="table-cell">
+            <p>Cash</p>
+          </div>
+          <div class="table-cell">
+            <p>Pay Method</p>
+          </div>
+        </div>
+        <div class="table-row">
+          <div class="table-cell">
+            <p>123</p>
+          </div>
+          <div class="table-cell">
+            <p>5.99</p>
+          </div>
+          <div class="table-cell">
+            <p>Cash</p>
+          </div>
+          <div class="table-cell">
+            <p>Pay Method</p>
+          </div>
+        </div>
+      </div>
+      <div class="total-tips">
+        <h3>Total :</h3>
+        <h3 id="amount">Hi</h3>
+      </div>
+      <div>
+        <button class="add-delivery">
+          <i class="fas fa-plus plus-btn"></i>
+        </button>
+        <div class="add-delivery-box">
+          <div class="add-delivery-header">
+            <div class="title">Add Delivery</div>
+            <i class="fas fa-times close"></i>
+          </div>
+          <div class="add-delivery-body">
+            <div class="add-delivery-input">
+              <input
+                type="text"
+                placeholder="Delivery No."
+                class="event-time-from"
+              />
+            </div>
+            <div class="add-delivery-input">
+              <input type="text" placeholder="Amount" class="event-time-from" />
+            </div>
+            <div class="toggle-container">
+              <div class="icon-background">
+                <div id="cardIcon" class="icon">
+                  <i class="fa-solid fa-credit-card"></i>
+                  <p>Card</p>
+                </div>
+                <div id="cashIcon" class="icon">
+                  <i class="fas fa-money-bill-wave"></i>
+                  <p>Cash</p>
+                </div>
+              </div>
+            </div>
+            <div class="add-delivery-footer">
+              <button class="add-delivery-btn">
+                Add Delivery
+                <i class="fa-solid fa-pizza-slice"></i>
+              </button>
+              <button class="modify-delete-order">
+                Modify Order
+                <i class="fa-solid fa-gears"></i>
+              </button>
+              <p class="modify-delete-order"></p>
+              <button class="modify-delete-order">
+                Delete Order
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-container">
+      <button id="reset-btn">
+        Reset Table
+        <img src="image/reload.png" alt="Reset Icon" width="25" height="25" />
+      </button>
+    </div>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+  </body>
+</html>

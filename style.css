@@ -1,0 +1,301 @@
+@import url("https://fonts.googleapis.com/css2?family=Itim&family=Raleway&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Raleway", sans-serif;
+}
+
+body {
+  /* 100vh: Represents the full height of the viewport.  */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  background-image: url("./image/keith-misner-h0Vxgz5tyXA-unsplash.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  transition: all 0.3s ease-in-out;
+}
+
+.container {
+  position: relative;
+  width: 800px;
+  height: 750px;
+  min-height: 750px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 35px;
+  margin-top: -10px;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.437);
+  border-radius: 10px;
+}
+
+.table {
+  width: 100%;
+  height: 82%;
+  border-bottom: 1px solid #ffffff55;
+  overflow: auto;
+}
+
+.table-row {
+  display: table;
+  width: 80%;
+  height: 10%;
+  margin: 10px auto;
+  font-size: 17px;
+  font-family: sans-serif;
+  background-color: #53420060;
+  padding: 12px 0;
+  color: #ffffff;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 50, 0.3);
+}
+.table-cell {
+  display: table-cell;
+  width: 15%;
+  text-align: center;
+  padding: 4px 0;
+  border-right: 1px solid #d6d4d4;
+  vertical-align: middle;
+}
+.table-cell:last-child {
+  border-right: none;
+}
+
+.table-row.table-head {
+  background: radial-gradient(
+    circle at top left,
+    rgb(221, 196, 158),
+    rgb(126, 106, 90) 70%
+  );
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+  position: sticky; /* Makes the top coulmn static */
+
+  top: 0;
+}
+
+.total-tips {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  align-items: center;
+  margin-top: 15px;
+  color: #ffffff;
+}
+
+#reset-btn {
+  width: 180px; /* Example width */
+  height: 50px; /* Example height */
+  background-color: #915a5a70; /* Example background color */
+  border: none; /* No border */
+  border-radius: 20px; /* Fully rounded edges */
+  padding: 10px 20px; /* Example padding */
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+  align-items: center; /* Center items vertically */
+  gap: 10px;
+  font-size: 18px; /* Example font size */
+  font-weight: bold;
+  color: white; /* Text color */
+  margin-bottom: 10px;
+  cursor: pointer; /* Change mouse pointer to indicate clickable */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Example shadow */
+  transition: all 0.3s; /* Smooth transition for button interactions */
+}
+
+#reset-btn:hover {
+  background-color: #c19a6b71; /* Darker background color on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Larger shadow on hover */
+}
+
+#reset-btn img {
+  align-self: center; /* Center the image vertically */
+}
+
+#reset-btn:active {
+  background-color: #8a795d5f;
+  scale: 95%;
+}
+
+.add-delivery {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  opacity: 0.9;
+  border-radius: 50%;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+}
+
+.add-delivery:active {
+  scale: 95%;
+  color: rgb(255, 204, 0);
+  border-color: rgb(255, 204, 0);
+}
+
+.add-delivery-box {
+  position: absolute;
+  top: 70px;
+  left: 92.5%;
+  max-height: 0;
+  width: 50%;
+  overflow: hidden;
+  border-radius: 5px;
+  background-color: #fff;
+  transform: translateX(-92.5%);
+  transition: max-height 0.6s;
+}
+
+.add-delivery-box.active {
+  max-height: 400px;
+}
+
+.add-delivery-header {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  color: #373c4f;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.add-delivery-header .close {
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-delivery-header .close:hover {
+  color: rgb(255, 204, 0);
+}
+
+.add-delivery-header .title {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.add-delivery-body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+}
+
+.add-delivery-body .add-delivery-input {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.add-delivery-body .add-delivery-input input {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #b7b1b162;
+  padding: 0 10px;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--primary--clr);
+}
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.icon-background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4a460;
+  width: 170px;
+  padding: 10px;
+  border-radius: 20px;
+  gap: 20px;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.icon {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 20px;
+  transition: opacity 0.25s;
+}
+
+#cardIcon {
+  opacity: 1; /* Default visible */
+}
+
+#cashIcon {
+  opacity: 0.3; /* Default dimmed */
+}
+
+.add-delivery-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 5px;
+}
+
+button {
+  height: 40px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  outline: none;
+  border: none;
+  color: #000000;
+  background-color: #f4a460;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  border-radius: 20px;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: all 0.3s ease-out;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.add-delivery-btn:hover {
+  background-color: #e7860683;
+}
+
+.add-delivery-btn:active {
+  scale: 95%;
+}
+
+.modify-delete-order {
+  display: none;
+}
