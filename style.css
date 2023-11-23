@@ -22,6 +22,10 @@ body {
   transition: all 0.3s ease-in-out;
 }
 
+p, h3 {
+  caret-color: transparent;
+}
+
 .container {
   position: relative;
   width: 800px;
@@ -169,6 +173,8 @@ body {
 }
 
 .add-delivery-header {
+  cursor: Default;
+  caret-color: transparent;
   width: 100%;
   height: 50px;
   display: flex;
@@ -192,6 +198,7 @@ body {
 .add-delivery-header .title {
   font-size: 1.2rem;
   font-weight: 500;
+  color: #f5943f;
 }
 
 .add-delivery-body {
@@ -244,6 +251,7 @@ body {
 
 .icon {
   cursor: pointer;
+  caret-color: transparent; /* Removes caret blinker '|'*/
   display: flex;
   justify-content: center;
   align-items: center;
@@ -286,9 +294,11 @@ button {
   padding: 5px 10px;
   transition: all 0.3s ease-out;
   box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+  caret-color: transparent;
 }
 
 .add-delivery-btn:hover {
+  caret-color: transparent;
   background-color: #e7860683;
 }
 
