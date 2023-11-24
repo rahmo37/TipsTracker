@@ -1,3 +1,4 @@
+let deliveryId = 0;
 let deliveryNumber = 0;
 let tipsAmount = 0.0;
 let selectedPaymentMethod = "";
@@ -12,13 +13,21 @@ let deliveryNoField = document.querySelector(".delivery-number");
 let amountField = document.querySelector(".tips-amount");
 let cardIcon = document.getElementById("cardIcon");
 let cashIcon = document.getElementById("cashIcon");
+let table = document.querySelector(".table");
 let deliveryArr = [];
 const daysArr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 // delivery constructor;
-function delivery(deliverNumber, tipsAmount, selectedPaymentMethod, timeStamp) {
-  this.deliverNumber = deliverNumber;
-  this.tipsAmount = Number(tipsAmount.slice(2));
+function delivery(
+  deliveryId,
+  deliveryNumber,
+  tipsAmount,
+  selectedPaymentMethod,
+  timeStamp
+) {
+  this.deliveryId = deliveryId;
+  this.deliveryNumber = deliveryNumber;
+  this.tipsAmount = Number(tipsAmount.slice(2)).toFixed(2);
   this.selectedPaymentMethod = selectedPaymentMethod;
   this.timeStamp = timeStamp;
 }
@@ -48,7 +57,6 @@ document.addEventListener("click", (e) => {
 // Lets Change the toggle card to cash / cash to card selection
 
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("Contents Loaded!"); //! Added for debug purpose, remove it later
   let cardMethod = "Card";
   let cashMethod = "Cash";
   // initial selected method
@@ -63,20 +71,14 @@ document.addEventListener("DOMContentLoaded", function () {
     cardIcon.style.opacity = "1";
     cashIcon.style.opacity = "0.3";
     selectedPaymentMethod = cardMethod;
-    console.log(selectedPaymentMethod); //! Added for debug purpose, remove it later
   });
 
   cashIcon.addEventListener("click", function () {
     cashIcon.style.opacity = "1";
     cardIcon.style.opacity = "0.3";
     selectedPaymentMethod = cashMethod;
-    console.log(selectedPaymentMethod); //! Added for debug purpose, remove it later
   });
-  console.log(selectedPaymentMethod, "Line 58"); //! Added for debug purpose, remove it later
 });
-
-// click event when addDelivery button is pressed
-addDeliveryBtn.addEventListener("click", function () {}); //! Will be implemented later
 
 // Validating the deliverNo field
 deliveryNoField.addEventListener("input", function (e) {
@@ -85,6 +87,18 @@ deliveryNoField.addEventListener("input", function (e) {
 
   // Keeping only 3 characters
   deliveryNoField.value = deliveryNoField.value.slice(0, 3);
+});
+
+// when delivery filed is unfocused, the # symbol added to it
+deliveryNoField.addEventListener("blur", function (e) {
+  let value = deliveryNoField.value;
+
+  // if deliveryValue does not start with # symbol and the deliveryValue is not empty
+  // then we add a # symbol
+  if (!value.startsWith("#") && value !== "") {
+    value = "# " + value;
+  }
+  deliveryNoField.value = value;
 });
 
 // Validating amount field
@@ -136,40 +150,75 @@ amountField.addEventListener("input", function (e) {
   }
 });
 
-// events that occurs when the amount field is not focused
 amountField.addEventListener("blur", function () {
-  // add automatic 00s after a digit
-  if (!amountField.value.includes(".") && amountField.value[0] != undefined) {
-    amountField.value += ".00";
+  let value = amountField.value;
+  let decimalPart = value.split(".")[1];
+
+  // Add automatic .00 if no decimal point is present and the value is not empty
+  if (!value.includes(".") && value !== "") {
+    value += ".00";
   }
-  if (!amountField.value.includes("$") && amountField.value[0] != undefined) {
-    amountField.value = "$ " + amountField.value;
+  // If there's one digit after the decimal, add one more 0
+  else if (value.includes(".") && decimalPart.length === 1) {
+    value += "0";
   }
+  // If there's a decimal point but no digits after it, add two 0s
+  else if (value.includes(".") && decimalPart.length === 0) {
+    value += "00";
+  }
+
+  // Truncate to two decimal places if there are more than two
+  let decimalIndex = value.indexOf(".");
+  // If total length of value - decimalIndex is greater than three, basically means
+  // if there are more than 2 zeros than we only keep 2
+  // first we parse the value to float then even if there are more 0s we keep only 2
+  if (decimalIndex !== -1 && value.length - decimalIndex > 3) {
+    value = parseFloat(value).toFixed(2);
+  }
+
+  // Add $ sign if not present
+  if (!value.startsWith("$") && value !== "") {
+    value = "$ " + value;
+  }
+
+  amountField.value = value;
 });
 
 addDeliveryBtn.addEventListener("click", function () {
   // add an object in the deliveryArr, if fields are not empty
   deliveryNumber = deliveryNoField.value;
   tipsAmount = amountField.value;
+  console.log(tipsAmount);
   if (deliveryNumber != "" && tipsAmount != "") {
     deliveryArr.push(
       new delivery(
+        deliveryId,
         deliveryNumber,
         tipsAmount,
         selectedPaymentMethod,
         currentTimeStamp()
       )
     );
+
     alert("Delivery added successfully!");
+
+    // close the box after delivery addition
     addDeliveryBox.classList.remove("active");
+
+    // empty the fields
     setTimeout(function () {
       removeValuesFromFields();
-    }, 1000);
+    }, 500);
+    addDeliveryHtml(deliveryArr[deliveryId]);
+    deliveryId++;
   } else {
+    // if any field is empty we alert the user
     alert("Please fill up all the necessary fields and try again!");
   }
-  console.log(deliveryArr); //! Added for debug purpose, remove it later
+  console.log(deliveryArr);
 });
+
+// ! ------------------------------------- Helper Methods ---------------------------------------
 
 // This function when called removes all the values from input fields
 function removeValuesFromFields() {
@@ -189,8 +238,32 @@ function currentTimeStamp() {
   let timeString = hours + ":" + minutes;
 
   // If you want to add leading zeros to minutes and seconds:
-  let formattedTime = hours + ":" + (minutes < 10 ? "0" : "") + minutes;
+  let formattedTime =
+    daysArr[now.getDay()] +
+    ", " +
+    hours +
+    ":" +
+    (minutes < 10 ? "0" : "") +
+    minutes;
   return formattedTime;
 }
 
-// Next work is to add # symbol infornt of deliveryNo
+function addDeliveryHtml(currentDeliveryObj) {
+  table.innerHTML += `
+  <div class="table-row">
+  <div class="table-cell">
+    <p>${currentDeliveryObj.deliveryNumber}</p>
+  </div>
+  <div class="table-cell">
+    <p>${"$ " + currentDeliveryObj.tipsAmount}</p>
+  </div>
+  <div class="table-cell">
+    <p>${currentDeliveryObj.selectedPaymentMethod}</p>
+  </div>
+  <div class="table-cell">
+    <p>${currentDeliveryObj.timeStamp}</p>
+  </div>
+</div>`;
+}
+
+// Next, add comments where necessary and icons to the table fields
