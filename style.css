@@ -22,7 +22,8 @@ body {
   transition: all 0.3s ease-in-out;
 }
 
-p, h3 {
+p,
+h3 {
   caret-color: transparent;
 }
 
@@ -83,23 +84,45 @@ p, h3 {
   font-size: 20px;
   font-weight: bold;
   position: sticky; /* Makes the top coulmn static */
-
   top: 0;
 }
 
-.total-tips {
+.summary {
+  display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+  gap: 30px;
+  align-items: center;
+}
+
+.summary-attributes {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 5px;
   align-items: center;
   margin-top: 15px;
   color: #ffffff;
 }
 
+.value {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#amount,
+#total-title {
+  font-size: 25px;
+}
+
+h3 {
+  font-size: 15px;
+}
+
 #reset-btn {
   width: 180px; /* Example width */
   height: 50px; /* Example height */
-  background-color: #915a5a70; /* Example background color */
+  background-color: #20131370; /* Example background color */
   border: none; /* No border */
   border-radius: 20px; /* Fully rounded edges */
   padding: 10px 20px; /* Example padding */
@@ -307,5 +330,13 @@ button {
 }
 
 .modify-delete-order {
+  display: none;
+}
+
+#no-delivery {
+  position: absolute;
+  color: #ffffff83;
+  font-size: 26px;
+  font-weight: bold;
   display: none;
 }

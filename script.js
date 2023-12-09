@@ -2,6 +2,12 @@ let deliveryId = 0;
 let deliveryNumber = 0;
 let tipsAmount = 0.0;
 let selectedPaymentMethod = "";
+let totalAmount = 0;
+let tolatCashDel = 0;
+let tolatCardDel = 0;
+let tolatCashAmount = 0;
+let tolatCardAmount = 0;
+let currentDelivery = {};
 
 // Step one: lets first add the logic of opening the add delivery box
 let circleAddBtutton = document.querySelector(".add-delivery");
@@ -14,8 +20,18 @@ let amountField = document.querySelector(".tips-amount");
 let cardIcon = document.getElementById("cardIcon");
 let cashIcon = document.getElementById("cashIcon");
 let table = document.querySelector(".table");
+let totalAmountfield = document.getElementById("amount");
+let resetBtn = document.getElementById("reset-btn");
+let noDeliveryMessage = document.getElementById("no-delivery");
+let sumDate = document.getElementById("sum-date");
+let sumDel = document.getElementById("sum-del");
+let sumCash = document.getElementById("sum-cash");
+let sumCard = document.getElementById("sum-card");
 let deliveryArr = [];
 const daysArr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+// First load if there are any previous delivery entries
+getAddedDeliveries();
 
 // delivery constructor;
 function delivery(
@@ -27,18 +43,24 @@ function delivery(
 ) {
   this.deliveryId = deliveryId;
   this.deliveryNumber = deliveryNumber;
-  this.tipsAmount = Number(tipsAmount.slice(2)).toFixed(2);
+  // toFixed returns a string
+  this.tipsAmount = Number(tipsAmount.slice(2));
+  console.log(this.tipsAmount);
   this.selectedPaymentMethod = selectedPaymentMethod;
   this.timeStamp = timeStamp;
 }
 
 circleAddBtutton.addEventListener("click", function () {
+  setTimeout(function () {
+    resetSlider();
+  }, 500);
   addDeliveryBox.classList.toggle("active");
 });
 
 // When pressed on the clise button the box will close
 closeBtn.addEventListener("click", () => {
   addDeliveryBox.classList.remove("active");
+  console.log(selectedPaymentMethod);
   setTimeout(function () {
     removeValuesFromFields();
   }, 500);
@@ -63,8 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
   selectedPaymentMethod = cardMethod;
 
   // Set the initial state
-  cardIcon.style.opacity = "1";
-  cashIcon.style.opacity = "0.3";
+  resetSlider();
 
   // Now lets add event listeners
   cardIcon.addEventListener("click", function () {
@@ -180,7 +201,6 @@ amountField.addEventListener("blur", function () {
   if (!value.startsWith("$") && value !== "") {
     value = "$ " + value;
   }
-
   amountField.value = value;
 });
 
@@ -209,23 +229,59 @@ addDeliveryBtn.addEventListener("click", function () {
     setTimeout(function () {
       removeValuesFromFields();
     }, 500);
-    addDeliveryHtml(deliveryArr[deliveryId]);
+
+    currentDelivery = deliveryArr[deliveryId];
+
+    // Update no delivery message
+    noDelivery();
+
+    // Sending the current delivery object with the delivery ID number, so the add Delivery method can access that delivery's attributes
+    addDeliveryHtml(currentDelivery);
+
+    // Update the total amount
+    updateTotalAmount(currentDelivery);
+
+    // Update the summary attributes
+    updateSummaryAttributes(currentDelivery);
+
+    // save the added delivery
+    saveAddedDeliveries();
+
+    // The delivery id increases after every delivery added
     deliveryId++;
   } else {
     // if any field is empty we alert the user
     alert("Please fill up all the necessary fields and try again!");
   }
-  console.log(deliveryArr);
+});
+
+// When reset btn is clicked all the delivery data is deleted
+resetBtn.addEventListener("click", function () {
+  const response = confirm("Are you sure you want to reset the table?");
+  if (response) {
+    removeDeliveries();
+    deliveryArr.length = 0;
+    localStorage.clear();
+    resetTotalAmount();
+    deliveryId = 0;
+    resetSummaryAttributes();
+    noDelivery();
+  }
 });
 
 // ! ------------------------------------- Helper Methods ---------------------------------------
+
+function resetSlider() {
+  selectedPaymentMethod = "Card";
+  cardIcon.style.opacity = "1";
+  cashIcon.style.opacity = "0.3";
+}
 
 // This function when called removes all the values from input fields
 function removeValuesFromFields() {
   deliveryNoField.value = "";
   amountField.value = "";
-  cardIcon.style.opacity = "1";
-  cashIcon.style.opacity = "0.3";
+  resetSlider();
 }
 
 // This function returns the current time, formatted
@@ -234,36 +290,129 @@ function currentTimeStamp() {
   let hours = now.getHours();
   let minutes = now.getMinutes();
 
-  // You can format the time as a string as follows:
-  let timeString = hours + ":" + minutes;
+  // Determine AM or PM suffix
+  let amPm = hours >= 12 ? "PM" : "AM";
 
-  // If you want to add leading zeros to minutes and seconds:
+  // Optionally convert to 12-hour format
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+
+  // Add leading zeros to minutes if needed
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+
+  // Finally format the time
   let formattedTime =
-    daysArr[now.getDay()] +
-    ", " +
-    hours +
-    ":" +
-    (minutes < 10 ? "0" : "") +
-    minutes;
+    daysArr[now.getDay()] + ", " + hours + ":" + minutes + " " + amPm;
   return formattedTime;
 }
 
 function addDeliveryHtml(currentDeliveryObj) {
+  // Retrieving the infomration from the current delivery object and settingits data in the HTML
   table.innerHTML += `
   <div class="table-row">
+  <div class="table-cell">
+    <p>${currentDeliveryObj.deliveryId + 1}</p>
+  </div>
   <div class="table-cell">
     <p>${currentDeliveryObj.deliveryNumber}</p>
   </div>
   <div class="table-cell">
-    <p>${"$ " + currentDeliveryObj.tipsAmount}</p>
+    <p>${currentDeliveryObj.tipsAmount.toFixed(2)}</p>
   </div>
   <div class="table-cell">
     <p>${currentDeliveryObj.selectedPaymentMethod}</p>
   </div>
   <div class="table-cell">
-    <p>${currentDeliveryObj.timeStamp}</p>
+    <p>${currentTimeStamp()}</p>
   </div>
 </div>`;
 }
 
-// Next, add comments where necessary and icons to the table fields
+// Whit this function we are updating the total amount
+function updateTotalAmount(currentDeliveryObj) {
+  totalAmount += currentDeliveryObj.tipsAmount;
+  totalAmountfield.innerHTML = totalAmount.toFixed(2);
+}
+
+// Reset the total amount to 0
+function resetTotalAmount() {
+  totalAmount = 0;
+  totalAmountfield.innerHTML = "0.00";
+}
+
+// we are saving the delivery in our localStorage
+function saveAddedDeliveries() {
+  localStorage.setItem("deliveries", JSON.stringify(deliveryArr));
+}
+
+// retrieving the data from the local storage
+function getAddedDeliveries() {
+  if (localStorage.getItem("deliveries") !== null) {
+    try {
+      deliveryArr.push(...JSON.parse(localStorage.getItem("deliveries")));
+    } catch (err) {
+      console.log(err.title);
+    }
+    deliveryArr.forEach(function (elem) {
+      {
+        addDeliveryHtml(elem);
+        // console.log(elem.deliveryId, "elem.deliveryID");
+        deliveryId++;
+        // console.log(deliveryId, "deliveryID");
+        updateTotalAmount(elem);
+
+        // Update the summary attribute
+        updateSummaryAttributes(elem);
+      }
+    });
+  } else {
+    // Since the getAddedDelivery is getting called up top, is the deliveryArr is empty the message will be show.
+    noDelivery();
+    console.log("localStorage Empty!");
+  }
+}
+
+// This function is deleting all the elements in the table except the heading
+function removeDeliveries() {
+  let firstElement = table.firstElementChild;
+  while (firstElement.nextSibling) {
+    table.removeChild(firstElement.nextSibling);
+  }
+}
+
+// The no delivery function, that will show a message that no delivery yet
+function noDelivery() {
+  console.log(deliveryArr.length);
+  if (deliveryArr.length === 0) {
+    noDeliveryMessage.style.display = "block";
+  } else {
+    noDeliveryMessage.style.display = "none";
+  }
+}
+
+// this method formats and updates the summary attributes
+function updateSummaryAttributes(currentDelivery) {
+  sumDel.innerHTML = deliveryArr.length;
+  if (currentDelivery.selectedPaymentMethod === "Card") {
+    tolatCardDel++;
+    tolatCardAmount += currentDelivery.tipsAmount;
+    sumCard.innerHTML = `${tolatCardAmount.toFixed(2)}/${tolatCardDel}`;
+  } else {
+    tolatCashDel++;
+    tolatCashAmount += currentDelivery.tipsAmount;
+    sumCash.innerHTML = `${tolatCashAmount.toFixed(2)}/${tolatCashDel}`;
+  }
+}
+
+// reset all the summary attributes
+function resetSummaryAttributes() {
+  tolatCardDel = 0;
+  tolatCardAmount = 0;
+  tolatCashDel = 0;
+  tolatCashAmount = 0;
+  sumDel.innerHTML = "0";
+  sumCard.innerHTML = "$0.00 / 0";
+  sumCash.innerHTML = "$0.00 / 0";
+}
+
+// updated the date Summary attribute and add comments on the new method added today

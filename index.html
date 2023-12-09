@@ -21,7 +21,10 @@
         <!-- Head Row -->
         <div class="table-row table-head">
           <div class="table-cell">
-            <p>Delivery No.</p>
+            <p>ID</p>
+          </div>
+          <div class="table-cell">
+            <p>Del No.</p>
           </div>
           <div class="table-cell">
             <p>Amount</p>
@@ -35,7 +38,11 @@
         </div>
         <!-- Head Row ends -->
         <!-- Sample Row -->
-        <div class="table-row">
+
+        <!-- <div class="table-row">
+          <div class="table-cell">
+            <p>123</p>
+          </div>
           <div class="table-cell">
             <p>123</p>
           </div>
@@ -48,14 +55,33 @@
           <div class="table-cell">
             <p>Pay Method</p>
           </div>
-        </div>
+        </div> -->
+
         <!-- Sample Row ends -->
       </div>
-      <div class="total-tips">
-        <h3>Total :</h3>
-        <h3 id="amount">Hi</h3>
-      </div>
-      <div>
+      <div class="summary">
+        <div class="summary-attributes">
+          <h3>Date:</h3>
+          <p class="value" id="sum-date">29-Nov</p>
+        </div>
+        <div class="summary-attributes">
+          <h3>Deliveries:</h3>
+          <p class="value" id="sum-del">0</p>
+        </div>
+        <div class="summary-attributes">
+          <h3 id="total-title">Total :</h3>
+          <p class="value" id="amount">0.00</p>
+        </div>
+        <div class="summary-attributes">
+          <h3>Cash:</h3>
+          <p class="value" id="sum-cash">$0.00 / 0</p>
+        </div>
+        <div class="summary-attributes">
+          <h3>Card</h3>
+          <p class="value" id="sum-card">0.00 / 0</p>
+        </div>
+        
+
         <button class="add-delivery">
           <i class="fas fa-plus plus-btn"></i>
         </button>
@@ -105,11 +131,21 @@
           </div>
         </div>
       </div>
+      <p id="no-delivery">
+        <i class="fa-solid fa-bell-concierge"></i>
+        No Deliveries Yet
+      </p>
     </div>
     <div class="bottom-container">
       <button id="reset-btn">
         Reset Table
-        <img src="image/reload.png" alt="Reset Icon" width="25" height="25" />
+        <img
+          id="reset-icon"
+          src="image/refresh1.png"
+          alt="Reset Icon"
+          width="25"
+          height="25"
+        />
       </button>
     </div>
 
