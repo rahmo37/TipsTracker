@@ -21,7 +21,7 @@
         <!-- Head Row -->
         <div class="table-row table-head">
           <div class="table-cell">
-            <p>ID</p>
+            <p>Fixed ID</p>
           </div>
           <div class="table-cell">
             <p>Del No.</p>
@@ -62,7 +62,7 @@
       <div class="summary">
         <div class="summary-attributes">
           <h3>Date:</h3>
-          <p class="value" id="sum-date">29-Nov</p>
+          <p class="value" id="sum-date"></p>
         </div>
         <div class="summary-attributes">
           <h3>Deliveries:</h3>
@@ -77,17 +77,16 @@
           <p class="value" id="sum-cash">$0.00 / 0</p>
         </div>
         <div class="summary-attributes">
-          <h3>Card</h3>
+          <h3>Card:</h3>
           <p class="value" id="sum-card">0.00 / 0</p>
         </div>
-        
 
         <button class="add-delivery">
           <i class="fas fa-plus plus-btn"></i>
         </button>
         <div class="add-delivery-box">
           <div class="add-delivery-header">
-            <div class="title">Add Delivery</div>
+            <div class="title" id="deliveryBox-heading">Add Delivery</div>
             <i class="fas fa-times close"></i>
           </div>
           <div class="add-delivery-body">
@@ -118,12 +117,12 @@
                 Add Delivery
                 <i class="fa-solid fa-pizza-slice"></i>
               </button>
-              <button class="modify-delete-order">
+              <button class="modify-delete-order" id="modify-btn">
                 Modify Order
                 <i class="fa-solid fa-gears"></i>
               </button>
               <p class="modify-delete-order"></p>
-              <button class="modify-delete-order">
+              <button class="modify-delete-order" id="delete-btn">
                 Delete Order
                 <i class="fa-solid fa-trash-can"></i>
               </button>
@@ -133,7 +132,7 @@
       </div>
       <p id="no-delivery">
         <i class="fa-solid fa-bell-concierge"></i>
-        No Deliveries Yet
+        No Deliveries Yet!
       </p>
     </div>
     <div class="bottom-container">

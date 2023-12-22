@@ -8,13 +8,17 @@ let tolatCardDel = 0;
 let tolatCashAmount = 0;
 let tolatCardAmount = 0;
 let currentDelivery = {};
+let modifyOrDeleteDeliveryId = 0;
 
 // Step one: lets first add the logic of opening the add delivery box
 let circleAddBtutton = document.querySelector(".add-delivery");
 let addDeliveryBox = document.querySelector(".add-delivery-box");
 let closeBtn = document.querySelector(".close");
 let plusBtn = document.querySelector(".plus-btn");
+let deliveryBoxHeading = document.getElementById("deliveryBox-heading");
 let addDeliveryBtn = document.querySelector(".add-delivery-btn");
+let modifyBtn = document.getElementById("modify-btn");
+let deleteBtn = document.getElementById("delete-btn");
 let deliveryNoField = document.querySelector(".delivery-number");
 let amountField = document.querySelector(".tips-amount");
 let cardIcon = document.getElementById("cardIcon");
@@ -27,11 +31,33 @@ let sumDate = document.getElementById("sum-date");
 let sumDel = document.getElementById("sum-del");
 let sumCash = document.getElementById("sum-cash");
 let sumCard = document.getElementById("sum-card");
+
+let element;
 let deliveryArr = [];
 const daysArr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const monthArr = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 // First load if there are any previous delivery entries
 getAddedDeliveries();
+
+// update the date
+sumDate.innerHTML = returnDateAndMonth();
+
+// add event listener to each row
+addEventListenerToRows();
 
 // delivery constructor;
 function delivery(
@@ -51,9 +77,7 @@ function delivery(
 }
 
 circleAddBtutton.addEventListener("click", function () {
-  setTimeout(function () {
-    resetSlider();
-  }, 500);
+  removeValuesFromFields();
   addDeliveryBox.classList.toggle("active");
 });
 
@@ -67,12 +91,37 @@ closeBtn.addEventListener("click", () => {
 });
 
 document.addEventListener("click", (e) => {
-  if (
-    e.target != circleAddBtutton &&
-    e.target != plusBtn &&
-    !addDeliveryBox.contains(e.target)
-  ) {
+  let tableRows = document.querySelectorAll(".table-row");
+  element = e.target;
+  // close the add delivery box if the element is not the circle button and the element is not the plus button and the delivery box does not contain the element and the current table row does not contain the element
+  try {
+    if (
+      element != circleAddBtutton &&
+      element != plusBtn &&
+      !addDeliveryBox.contains(element) &&
+      !tableRows[modifyOrDeleteDeliveryId + 1].contains(element)
+    ) {
+      addDeliveryBox.classList.remove("active");
+    }
+  } catch (e) {
+    console.log(e);
+    // We recicve an err when we try to close the box when there are no deliveries, because the tableRow is empty, it throws an error but we handle the error and simply close the add delivery box when the err occurs
     addDeliveryBox.classList.remove("active");
+  }
+  //  if the add delivery box is open then the table row and the reset button is unclickble else vise versa
+  if (addDeliveryBox.classList.contains("active")) {
+    resetBtn.style.pointerEvents = "none";
+    tableRows.forEach((elem) => {
+      elem.style.pointerEvents = "none";
+    });
+  } else {
+    resetBtn.style.pointerEvents = "auto";
+    tableRows.forEach((elem) => {
+      elem.style.pointerEvents = "auto";
+      setTimeout(function () {
+        addOrRemoveButtons("block", "none", "none");
+      }, 500);
+    });
   }
 });
 
@@ -247,6 +296,9 @@ addDeliveryBtn.addEventListener("click", function () {
     // save the added delivery
     saveAddedDeliveries();
 
+    // add event listener to the newly added delivery
+    addEventListenerToRows();
+
     // The delivery id increases after every delivery added
     deliveryId++;
   } else {
@@ -269,6 +321,69 @@ resetBtn.addEventListener("click", function () {
   }
 });
 
+// This method adds listener to all table rows
+// Also opens the delivery box puts the current delivery attributes in the fileds, removes the add button and adds the modify and delete buttons
+function addEventListenerToRows() {
+  let tableRows = document.querySelectorAll(".table-row");
+  // Even if a click occurs on an inner element of a row, the event will still activate the event listener attached to the row due to event bubbling, as events propagate up to parent elements in the DOM.
+
+  tableRows.forEach(function (row, index) {
+    if (index !== 0) {
+      let deliveryId = index - 1;
+      row.addEventListener("click", function () {
+        let response = confirm(
+          `
+        Delivery ID: ${deliveryArr[deliveryId].deliveryId + 1}\n
+        Delivery Number: ${deliveryArr[deliveryId].deliveryNumber.slice(2)} \n
+        Do you want to MODIFY or DELETE this delivery?`
+        );
+        if (response) {
+          if (!row.classList.contains("table-head")) {
+            deliveryBoxHeading.innerHTML = "Configure Delivery";
+            addDeliveryBox.classList.add("active");
+            modifyOrDeleteDeliveryId = deliveryId;
+            deliveryNoField.value = deliveryArr[deliveryId].deliveryNumber;
+            amountField.value = "$ " + deliveryArr[deliveryId].tipsAmount;
+            setSlider(deliveryArr[deliveryId].selectedPaymentMethod);
+            addOrRemoveButtons("none", "block", "block");
+          }
+        }
+      });
+    }
+  });
+}
+// modify button logic is in this function
+modifyBtn.addEventListener("click", function () {
+  // close the box after delivery modification
+  addDeliveryBox.classList.remove("active");
+
+  // empty the fields
+  setTimeout(function () {
+    removeValuesFromFields();
+  }, 500);
+});
+// delete button logic is in this function
+deleteBtn.addEventListener("click", function () {
+  let tableRows = document.querySelectorAll(".table-row");
+  let response = confirm("Delete this delivery?");
+  if (response) {
+    let rowToDelete = tableRows[modifyOrDeleteDeliveryId + 1];
+    if (rowToDelete && rowToDelete.parentNode) {
+      rowToDelete.parentNode.removeChild(rowToDelete);
+      deliveryArr.splice(modifyOrDeleteDeliveryId, 1);
+      saveAddedDeliveries();
+      location.reload();
+      // close the box after delivery deletion
+      addDeliveryBox.classList.remove("active");
+    }
+  }
+
+  // empty the fields
+  setTimeout(function () {
+    removeValuesFromFields();
+  }, 500);
+});
+
 // ! ------------------------------------- Helper Methods ---------------------------------------
 
 function resetSlider() {
@@ -277,8 +392,19 @@ function resetSlider() {
   cashIcon.style.opacity = "0.3";
 }
 
+function setSlider(currentPaymentMethod) {
+  if (currentPaymentMethod === "Card") {
+    cardIcon.style.opacity = "1";
+    cashIcon.style.opacity = "0.3";
+  } else {
+    cardIcon.style.opacity = "0.3";
+    cashIcon.style.opacity = "1";
+  }
+}
+
 // This function when called removes all the values from input fields
 function removeValuesFromFields() {
+  deliveryBoxHeading.innerHTML = "Add Delivery";
   deliveryNoField.value = "";
   amountField.value = "";
   resetSlider();
@@ -307,6 +433,12 @@ function currentTimeStamp() {
 }
 
 function addDeliveryHtml(currentDeliveryObj) {
+  // Setting an icon based on the payment method
+  let icon =
+    currentDeliveryObj.selectedPaymentMethod === "Card"
+      ? `<i class="fa-solid fa-credit-card"></i>`
+      : `<i class="fas fa-money-bill-wave"></i>`;
+
   // Retrieving the infomration from the current delivery object and settingits data in the HTML
   table.innerHTML += `
   <div class="table-row">
@@ -320,10 +452,10 @@ function addDeliveryHtml(currentDeliveryObj) {
     <p>${currentDeliveryObj.tipsAmount.toFixed(2)}</p>
   </div>
   <div class="table-cell">
-    <p>${currentDeliveryObj.selectedPaymentMethod}</p>
+    <p>${currentDeliveryObj.selectedPaymentMethod} / ${icon}</p>
   </div>
   <div class="table-cell">
-    <p>${currentTimeStamp()}</p>
+    <p>${currentDeliveryObj.timeStamp}</p>
   </div>
 </div>`;
 }
@@ -363,6 +495,7 @@ function getAddedDeliveries() {
 
         // Update the summary attribute
         updateSummaryAttributes(elem);
+        console.log("line 498");
       }
     });
   } else {
@@ -396,11 +529,11 @@ function updateSummaryAttributes(currentDelivery) {
   if (currentDelivery.selectedPaymentMethod === "Card") {
     tolatCardDel++;
     tolatCardAmount += currentDelivery.tipsAmount;
-    sumCard.innerHTML = `${tolatCardAmount.toFixed(2)}/${tolatCardDel}`;
+    sumCard.innerHTML = `${tolatCardAmount.toFixed(2)} / ${tolatCardDel}`;
   } else {
     tolatCashDel++;
     tolatCashAmount += currentDelivery.tipsAmount;
-    sumCash.innerHTML = `${tolatCashAmount.toFixed(2)}/${tolatCashDel}`;
+    sumCash.innerHTML = `${tolatCashAmount.toFixed(2)} / ${tolatCashDel}`;
   }
 }
 
@@ -415,4 +548,20 @@ function resetSummaryAttributes() {
   sumCash.innerHTML = "$0.00 / 0";
 }
 
-// updated the date Summary attribute and add comments on the new method added today
+// returns date and month in this format: 10-dec
+function returnDateAndMonth() {
+  let date = new Date(); //Current date and time
+  let today = date.getDate(); // current date of the month
+  let monthNo = date.getMonth(); // month as a number (0-11)
+  let monthName = monthArr[monthNo];
+  return today + "-" + monthName;
+}
+
+// dynamically add or remove the buttons
+function addOrRemoveButtons(addBtnVal, modBtnVal, delBtnVal) {
+  addDeliveryBtn.style.display = addBtnVal;
+  modifyBtn.style.display = modBtnVal;
+  deleteBtn.style.display = delBtnVal;
+}
+
+// add necessary comments, fix the delivery ID issue (After deleting a delivery in the middle, the next delivery added has the reddundent ID) Restructure the deliveryID logic, and then implement the logic for modification btn
