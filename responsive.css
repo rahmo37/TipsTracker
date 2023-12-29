@@ -8,7 +8,7 @@
 
   .table {
     table-layout: fixed; /* Fixed table layout for consistent column widths */
-    margin-top: 35px;
+    margin-top: 15px;
     width: 125%; /* Full width to utilize available space */
     overflow-x: auto; /* Scrollable horizontally if needed */
   }
@@ -52,7 +52,8 @@
   }
 
   .add-delivery {
-    height: 42px; /* Smaller height to maintain aspect ratio */
+    width: 30px;
+    height: 30px; /* Smaller height to maintain aspect ratio */
     right: 10px;
     top: 10px;
     border-radius: 50%; /* Rounded border to form a circle */
@@ -75,10 +76,5 @@
     width: 90%;
     left: 50%;
     transform: translateX(-50%);
-  }
-
-  button {
-    padding: 10px 20px;
-    font-size: 0.85rem;
   }
 }
