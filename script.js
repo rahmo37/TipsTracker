@@ -337,7 +337,7 @@ function addEventListenerToRows() {
         Delivery Number: ${deliveryArr[deliveryArrIndex].deliveryNumber.slice(
           2
         )} \n
-        Do you want to MODIFY or DELETE this delivery?`
+        MODIFY or DELETE this delivery?`
         );
         if (response) {
           if (!row.classList.contains("table-head")) {
@@ -358,7 +358,6 @@ function addEventListenerToRows() {
 }
 // modify button logic is in this function
 modifyBtn.addEventListener("click", function () {
-
   // confirm user's selection
   let response = confirm("Modify this delivery with the values in the field?");
 
