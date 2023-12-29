@@ -279,7 +279,7 @@ addDeliveryBtn.addEventListener("click", function () {
       removeValuesFromFields();
     }, 500);
 
-    currentDelivery = deliveryArr[deliveryId];
+    currentDelivery = deliveryArr[deliveryArr.length - 1];
 
     // Update no delivery message
     noDelivery();
@@ -300,7 +300,7 @@ addDeliveryBtn.addEventListener("click", function () {
     addEventListenerToRows();
 
     // The delivery id increases after every delivery added
-    deliveryId++;
+    deliveryId = currentDelivery.deliveryId + 1;
   } else {
     // if any field is empty we alert the user
     alert("Please fill up all the necessary fields and try again!");
@@ -329,38 +329,59 @@ function addEventListenerToRows() {
 
   tableRows.forEach(function (row, index) {
     if (index !== 0) {
-      let deliveryId = index - 1;
+      let deliveryArrIndex = index - 1;
       row.addEventListener("click", function () {
         let response = confirm(
           `
-        Delivery ID: ${deliveryArr[deliveryId].deliveryId + 1}\n
-        Delivery Number: ${deliveryArr[deliveryId].deliveryNumber.slice(2)} \n
+        Delivery ID: ${deliveryArr[deliveryArrIndex].deliveryId + 1}\n
+        Delivery Number: ${deliveryArr[deliveryArrIndex].deliveryNumber.slice(
+          2
+        )} \n
         Do you want to MODIFY or DELETE this delivery?`
         );
         if (response) {
           if (!row.classList.contains("table-head")) {
             deliveryBoxHeading.innerHTML = "Configure Delivery";
             addDeliveryBox.classList.add("active");
-            modifyOrDeleteDeliveryId = deliveryId;
-            deliveryNoField.value = deliveryArr[deliveryId].deliveryNumber;
-            amountField.value = "$ " + deliveryArr[deliveryId].tipsAmount;
-            setSlider(deliveryArr[deliveryId].selectedPaymentMethod);
+            modifyOrDeleteDeliveryId = deliveryArrIndex;
+            deliveryNoField.value =
+              deliveryArr[deliveryArrIndex].deliveryNumber;
+            amountField.value = "$ " + deliveryArr[deliveryArrIndex].tipsAmount;
+            setSlider(deliveryArr[deliveryArrIndex].selectedPaymentMethod);
             addOrRemoveButtons("none", "block", "block");
           }
         }
       });
     }
+    modifyBtn;
   });
 }
 // modify button logic is in this function
 modifyBtn.addEventListener("click", function () {
-  // close the box after delivery modification
-  addDeliveryBox.classList.remove("active");
 
-  // empty the fields
-  setTimeout(function () {
-    removeValuesFromFields();
-  }, 500);
+  // confirm user's selection
+  let response = confirm("Modify this delivery with the values in the field?");
+
+  // set the new value, if the response is true
+  if (response) {
+    deliveryArr[modifyOrDeleteDeliveryId].deliveryNumber =
+      deliveryNoField.value;
+    deliveryArr[modifyOrDeleteDeliveryId].tipsAmount = Number(
+      amountField.value.slice(2)
+    );
+    deliveryArr[modifyOrDeleteDeliveryId].selectedPaymentMethod =
+      selectedPaymentMethod;
+    saveAddedDeliveries();
+    location.reload();
+
+    // close the box after delivery modification
+    addDeliveryBox.classList.remove("active");
+
+    // empty the fields
+    setTimeout(function () {
+      removeValuesFromFields();
+    }, 500);
+  }
 });
 // delete button logic is in this function
 deleteBtn.addEventListener("click", function () {
@@ -372,16 +393,16 @@ deleteBtn.addEventListener("click", function () {
       rowToDelete.parentNode.removeChild(rowToDelete);
       deliveryArr.splice(modifyOrDeleteDeliveryId, 1);
       saveAddedDeliveries();
-      location.reload();
       // close the box after delivery deletion
       addDeliveryBox.classList.remove("active");
+      // With this code we can relode the whole screen
+      location.reload();
+      // empty the fields
+      setTimeout(function () {
+        removeValuesFromFields();
+      }, 500);
     }
   }
-
-  // empty the fields
-  setTimeout(function () {
-    removeValuesFromFields();
-  }, 500);
 });
 
 // ! ------------------------------------- Helper Methods ---------------------------------------
@@ -433,6 +454,7 @@ function currentTimeStamp() {
 }
 
 function addDeliveryHtml(currentDeliveryObj) {
+  console.log(currentDeliveryObj.tipsAmount);
   // Setting an icon based on the payment method
   let icon =
     currentDeliveryObj.selectedPaymentMethod === "Card"
@@ -442,9 +464,6 @@ function addDeliveryHtml(currentDeliveryObj) {
   // Retrieving the infomration from the current delivery object and settingits data in the HTML
   table.innerHTML += `
   <div class="table-row">
-  <div class="table-cell">
-    <p>${currentDeliveryObj.deliveryId + 1}</p>
-  </div>
   <div class="table-cell">
     <p>${currentDeliveryObj.deliveryNumber}</p>
   </div>
@@ -479,7 +498,15 @@ function saveAddedDeliveries() {
 
 // retrieving the data from the local storage
 function getAddedDeliveries() {
-  if (localStorage.getItem("deliveries") !== null) {
+  if (
+    localStorage.getItem("deliveries") === null ||
+    localStorage.getItem("deliveries") === "[]"
+  ) {
+    // Since the getAddedDelivery is getting called up top, is the deliveryArr is empty the message will be show.
+    noDelivery();
+    console.log("localStorage Empty!");
+  } else {
+    console.log("Hi");
     try {
       deliveryArr.push(...JSON.parse(localStorage.getItem("deliveries")));
     } catch (err) {
@@ -489,7 +516,7 @@ function getAddedDeliveries() {
       {
         addDeliveryHtml(elem);
         // console.log(elem.deliveryId, "elem.deliveryID");
-        deliveryId++;
+
         // console.log(deliveryId, "deliveryID");
         updateTotalAmount(elem);
 
@@ -497,11 +524,8 @@ function getAddedDeliveries() {
         updateSummaryAttributes(elem);
         console.log("line 498");
       }
+      deliveryId = deliveryArr[deliveryArr.length - 1].deliveryId + 1;
     });
-  } else {
-    // Since the getAddedDelivery is getting called up top, is the deliveryArr is empty the message will be show.
-    noDelivery();
-    console.log("localStorage Empty!");
   }
 }
 
@@ -564,4 +588,4 @@ function addOrRemoveButtons(addBtnVal, modBtnVal, delBtnVal) {
   deleteBtn.style.display = delBtnVal;
 }
 
-// add necessary comments, fix the delivery ID issue (After deleting a delivery in the middle, the next delivery added has the reddundent ID) Restructure the deliveryID logic, and then implement the logic for modification btn
+// add necessary comments, deliveryID issue is fixed, however there are some more bugs in the code, identify them, one of the bug is when delivery deltetion is confirmation promed if the promt is closed the values in the deliveryBox is cleared which is not intended, after that implement the logic for modification btn

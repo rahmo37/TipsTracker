@@ -88,11 +88,8 @@ h3 {
 }
 
 .table-row.table-head {
-  background: radial-gradient(
-    circle at top left,
-    rgb(221, 196, 158),
-    rgb(126, 106, 90) 70%
-  );
+  background: linear-gradient(to bottom, #513113, #573415, #603918, #71441d, #8b5525, #935b2a, #8d5729, #845124, #6d421c, #573414, #523111, #533110)
+  ;
   pointer-events: none; /*Makes the top coulmn unclickable*/
   color: #ffffff;
   font-size: 20px;

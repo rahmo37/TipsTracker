@@ -1,0 +1,55 @@
+@media only screen and (max-width: 768px) {
+ .container {
+     width: 95%;
+     padding: 15px;
+     margin-top: 20px; /* Adjust top margin */
+ }
+
+ .table {
+     overflow-x: auto;
+ }
+
+ .table-row, .table-cell {
+     font-size: 12px;
+     padding: 5px; /* Slightly larger padding */
+ }
+
+ .summary {
+     flex-wrap: wrap; 
+     justify-content: space-between; 
+     align-items: center; 
+     gap: 12px; 
+ }
+
+ .summary-attributes {
+     flex-direction: row; /* Keep items in a row */
+     flex-wrap: wrap; /* Allow wrapping */
+     justify-content: center; /* Center items */
+ }
+
+.value, h3{
+    font-size: 10px;
+}
+
+#amount, #total-title {
+     font-size: 15px; /* Adjust font size */
+ }
+
+ .add-delivery, .icon-background {
+     width: 28px;
+     height: 28px;
+ }
+
+ .add-delivery-box {
+     width: 80%;
+     left: 50%;
+     transform: translateX(-50%); /* Center the box */
+ }
+
+ button {
+     padding: 8px 15px;
+     font-size: 0.75rem;
+ }
+
+ /* Responsive adjustments for other elements as needed */
+}
