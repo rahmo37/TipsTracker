@@ -1,55 +1,84 @@
 @media only screen and (max-width: 768px) {
- .container {
-     width: 95%;
-     padding: 15px;
-     margin-top: 20px; /* Adjust top margin */
- }
+  .container {
+    width: 95%;
+    padding: 20px;
+    margin-top: 20px;
+    max-height: none;
+  }
 
- .table {
-     overflow-x: auto;
- }
+  .table {
+    table-layout: fixed; /* Fixed table layout for consistent column widths */
+    margin-top: 35px;
+    width: 125%; /* Full width to utilize available space */
+    overflow-x: auto; /* Scrollable horizontally if needed */
+  }
 
- .table-row, .table-cell {
-     font-size: 12px;
-     padding: 5px; /* Slightly larger padding */
- }
+  .table-row,
+  .table-cell {
+    text-align: center; /* Center-align content for consistent alignment */
+    padding: 6px;
+    font-size: 13px; /* Consistent font size for uniformity */
+  }
 
- .summary {
-     flex-wrap: wrap; 
-     justify-content: space-between; 
-     align-items: center; 
-     gap: 12px; 
- }
+  .table-cell {
+    min-width: 60px; /* Adjust min-width as needed for content */
+  }
 
- .summary-attributes {
-     flex-direction: row; /* Keep items in a row */
-     flex-wrap: wrap; /* Allow wrapping */
-     justify-content: center; /* Center items */
- }
+  .table-row.table-head {
+    font-size: 14px; /* Slightly larger font for header */
+  }
 
-.value, h3{
-    font-size: 10px;
-}
+  .summary {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
 
-#amount, #total-title {
-     font-size: 15px; /* Adjust font size */
- }
+  .summary-attributes {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
 
- .add-delivery, .icon-background {
-     width: 28px;
-     height: 28px;
- }
+  .value,
+  h3 {
+    font-size: 12px;
+  }
 
- .add-delivery-box {
-     width: 80%;
-     left: 50%;
-     transform: translateX(-50%); /* Center the box */
- }
+  #amount,
+  #total-title {
+    font-size: 14px;
+  }
 
- button {
-     padding: 8px 15px;
-     font-size: 0.75rem;
- }
+  .add-delivery {
+    height: 42px; /* Smaller height to maintain aspect ratio */
+    right: 10px;
+    top: 10px;
+    border-radius: 50%; /* Rounded border to form a circle */
+    font-size: 1rem; /* Adjust font size if text is inside */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
- /* Responsive adjustments for other elements as needed */
+  #reset-btn {
+    width: 150px; /* Smaller width */
+    height: 40px; /* Smaller height */
+    font-size: 12px; /* Smaller font size */
+    padding: 8px; /* Adjust padding as needed */
+    /* Other styling as required */
+    margin-bottom: 50px;
+  }
+
+  .add-delivery-box {
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
 }
